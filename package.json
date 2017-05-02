@@ -30,6 +30,9 @@
     "url": "https://github.com/marcus-sa/express-atlas/issues"
   },
   "homepage": "https://github.com/marcus-sa/express-atlas#readme",
+  "dependencies": {
+    "express": "*"
+  },
   "devDependencies": {
     "babel-cli": "*",
     "babel-core": "*",
