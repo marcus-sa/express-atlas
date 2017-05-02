@@ -1,6 +1,6 @@
 {
   "name": "express-atlas",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple routing wrapper for Express built on directory pattern recognition",
   "main": "dist/index.js",
   "scripts": {
