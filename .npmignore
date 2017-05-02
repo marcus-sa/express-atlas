@@ -1,0 +1,8 @@
+# Ignore source code which includes test folder
+src
+
+# Test folder
+test
+
+# Babel config
+.babelrc
