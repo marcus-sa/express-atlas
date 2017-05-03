@@ -55,6 +55,9 @@ Incase of having multiple route names where a post and get request is being call
 Will become:
 ```www.example.com/auth/login```
 
+* ```{root} > controllers > auth > login-post.js```
+Will become the same, but with a **post** request
+
 
 #### Routes without Mongoose
 ```javascript
