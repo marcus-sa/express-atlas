@@ -1,6 +1,6 @@
 {
   "name": "express-atlas",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A simple routing wrapper for Express built on directory pattern recognition with easy import of mongoose models",
   "main": "dist/index.js",
   "scripts": {
