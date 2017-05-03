@@ -17,10 +17,42 @@ function isType (key, type) {
 export default class AtlasRouter {
 
   constructor(options: Object) {
-    this.checkOptions(options)
+    const {mongoose, express, controllers} = options
 
-    const {controllers} = options
+    if (!isType(controllers, 'string')) {
+      throw new Error('You must include the path to your controllers')
+    }
 
+    if (isType(express, 'function')) {
+      this.express = express
+    } else {
+      throw new Error('You must include the express module as an option')
+    }
+
+    if (!isType(mongoose, 'undefined')) {
+      if (isType(mongoose, 'object')) {
+        if (!isType(mongoose[0], 'string')) {
+          throw new Error('First argument in options.mongoose must be a string containg a path to your models')
+        } else {
+          glob.sync(path.join(mongoose[0], '**')).forEach(file => {
+            const resolve = path.resolve(file)
+
+            if(!(fs.lstatSync(resolve).isDirectory())) {
+              require(resolve)
+            }
+          })
+
+          this.mongoose = mongoose[1]
+        }
+      } else {
+        throw new Error('Must be an object containing the mongoose module and path to your models')
+      }
+    }
+
+    this.itinerate(controllers)
+  }
+
+  itinerate(controllers) {
     glob.sync(path.join(controllers, '**')).forEach(file => {
       try {
         const resolve = path.resolve(file)
@@ -63,53 +95,11 @@ export default class AtlasRouter {
 
         this.controller = Controller
 
-        /*if (!isType(this.mongoose, 'undefined') && !isType(Controller.model, 'undefined')) {
-          const model = this.mongoose.model(Controller.model)
-          this.apply(app, route, Controller.model)
-        } else {
-          this.apply(app, route)
-        }*/
-
         this.apply(route)
       } catch(err) {
         throw err
       }
     })
-  }
-
-  checkOptions(options) {
-    const {mongoose, express, controllers} = options
-
-    if (!isType(controllers, 'string')) {
-      throw new Error('You must include the path to your controllers')
-    }
-
-    if (isType(express, 'function')) {
-      this.express = express
-    } else {
-      throw new Error('You must include the express module as an option')
-    }
-
-    if (!isType(mongoose, 'undefined')) {
-      if (isType(mongoose, 'object')) {
-        if (!isType(mongoose[0], 'string')) {
-          throw new Error('First argument in options.mongoose must be a string containg a path to your models')
-        } else {
-          glob.sync(path.join(mongoose[0], '**')).forEach(file => {
-            const resolve = path.resolve(file)
-
-            if(!(fs.lstatSync(resolve).isDirectory())) {
-              require(resolve)
-            }
-          })
-
-          this.mongoose = mongoose[1]
-        }
-      } else {
-        throw new Error('Must be an object containing the mongoose module and path to your models')
-      }
-    }
-
   }
 
   apply(route) {
