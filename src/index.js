@@ -76,7 +76,7 @@ export default class AtlasRouter {
 
         const Controller = require(file)
 
-        if (typeof Controller.params === 'undefined') {
+        if (isType(Controller.params, 'undefined')) {
           Controller.params = ''
         }
 
