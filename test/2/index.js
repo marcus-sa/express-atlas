@@ -17,7 +17,9 @@ const app = express()
 // apply middleware before usage
 // app.use(...)
 
-new AtlasRouter(path.join(__dirname, 'controllers'), app, {
+new AtlasRouter({
+  controllers: path.join(__dirname, 'controllers'),
+  express: app,
   mongoose: [path.join(__dirname, 'models'), mongoose]
 })
 

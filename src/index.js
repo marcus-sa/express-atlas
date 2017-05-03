@@ -16,8 +16,10 @@ function isType (key, type) {
 
 export default class AtlasRouter {
 
-  constructor(controllers: String, app: Object, options: Object) {
+  constructor(options: Object) {
     this.checkOptions(options)
+
+    const {controllers} = options
 
     glob.sync(path.join(controllers, '**')).forEach(file => {
       try {
@@ -68,7 +70,7 @@ export default class AtlasRouter {
           this.apply(app, route)
         }*/
 
-        this.apply(app, route)
+        this.apply(route)
       } catch(err) {
         throw err
       }
@@ -76,7 +78,18 @@ export default class AtlasRouter {
   }
 
   checkOptions(options) {
-    const {mongoose} = options
+    const {mongoose, express, controllers} = options
+
+    if (!isType(controllers, 'string')) {
+      throw new Error('You must include the path to your controllers')
+    }
+
+    if (isType(express, 'function')) {
+      this.express = express
+    } else {
+      throw new Error('You must include the express module as an option')
+    }
+
     if (!isType(mongoose, 'undefined')) {
       if (isType(mongoose, 'object')) {
         if (!isType(mongoose[0], 'string')) {
@@ -99,16 +112,16 @@ export default class AtlasRouter {
 
   }
 
-  apply(app, route) {
+  apply(route) {
     const {controller} = this
     if (isType(controller.model, 'undefined')) {
       const method = new Function('app', 'action', `return app.${controller.method}('${route}/${controller.params}', action)`)
 
-      method(app, controller.action)
+      method(this.express, controller.action)
     } else {
       const method = new Function('app', 'action', 'model', `return app.${controller.method}('${route}/${controller.params}', (req, res, next) => action(req, res, next, model))`)
 
-      method(app, controller.action, this.mongoose.model(controller.model))
+      method(this.express, controller.action, this.mongoose.model(controller.model))
     }
   }
 
