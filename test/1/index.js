@@ -8,7 +8,7 @@
 
 
 import express from 'express'
-import AtlasRouter from '../src'
+import AtlasRouter from '../../src'
 import path from 'path'
 
 const app = express()

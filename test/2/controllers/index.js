@@ -6,5 +6,11 @@
  * Licensed under the MIT license.
  */
 
-require('babel-register')
-require(process.env.NODE_ENV === 'test' ? './2' : './1')
+
+export default {
+  method: 'get',
+
+  action: function (req, res) {
+    res.send('Index page')
+  }
+}

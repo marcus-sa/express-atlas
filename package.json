@@ -1,13 +1,13 @@
 {
   "name": "express-atlas",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "A simple routing wrapper for Express built on directory pattern recognition",
   "main": "dist/index.js",
   "scripts": {
     "compile": "babel -d dist/ src/",
     "prepublish": "npm run compile",
     "build": "npm run compile",
-    "test": "cd test && nodemon ."
+    "test": "cross-env NODE_ENV=test nodemon test"
   },
   "repository": {
     "type": "git",
@@ -42,6 +42,8 @@
     "babel-preset-stage-0": "*",
     "babel-register": "*",
     "express": "*",
-    "nodemon": "*"
+    "nodemon": "*",
+    "mongoose": "*",
+    "cross-env": "*"
   }
 }

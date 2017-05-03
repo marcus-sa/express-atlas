@@ -10,9 +10,15 @@ import glob from 'glob'
 import path from 'path'
 import fs from 'fs'
 
+function isType (key, type) {
+  return typeof key === type
+}
+
 export default class AtlasRouter {
 
   constructor(controllers: String, app: Object, options: Object) {
+    this.checkOptions(options)
+
     glob.sync(path.join(controllers, '**')).forEach(file => {
       try {
         const resolve = path.resolve(file)
@@ -47,23 +53,63 @@ export default class AtlasRouter {
         //   > auth
         //    > login.js
         //    > login-post.js
-        if (typeof Controller.method === 'undefined') {
+        if (isType(Controller.method, 'undefined')) {
           const getMethod = route.split('-')[1]
           route = route.replace(`-${getMethod}`, '')
           Controller.method = getMethod
         }
 
-        this.apply(app, route, Controller)
+        this.controller = Controller
+
+        /*if (!isType(this.mongoose, 'undefined') && !isType(Controller.model, 'undefined')) {
+          const model = this.mongoose.model(Controller.model)
+          this.apply(app, route, Controller.model)
+        } else {
+          this.apply(app, route)
+        }*/
+
+        this.apply(app, route)
       } catch(err) {
         throw err
       }
     })
   }
 
-  apply(app, route, Controller) {
-    const method = new Function('app', 'action', `return app.${Controller.method}('${route}/${Controller.params}', action)`)
+  checkOptions(options) {
+    const {mongoose} = options
+    if (!isType(mongoose, 'undefined')) {
+      if (isType(mongoose, 'object')) {
+        if (!isType(mongoose[0], 'string')) {
+          throw new Error('First argument in options.mongoose must be a string containg a path to your models')
+        } else {
+          glob.sync(path.join(mongoose[0], '**')).forEach(file => {
+            const resolve = path.resolve(file)
 
-    method(app, Controller.action)
+            if(!(fs.lstatSync(resolve).isDirectory())) {
+              require(resolve)
+            }
+          })
+
+          this.mongoose = mongoose[1]
+        }
+      } else {
+        throw new Error('Must be an object containing the mongoose module and path to your models')
+      }
+    }
+
+  }
+
+  apply(app, route) {
+    const {controller} = this
+    if (isType(controller.model, 'undefined')) {
+      const method = new Function('app', 'action', `return app.${controller.method}('${route}/${controller.params}', action)`)
+
+      method(app, controller.action)
+    } else {
+      const method = new Function('app', 'action', 'model', `return app.${controller.method}('${route}/${controller.params}', (req, res, next) => action(req, res, next, model))`)
+
+      method(app, controller.action, this.mongoose.model(controller.model))
+    }
   }
 
   /*ignoreDir(path: String, ignore: Array) {
