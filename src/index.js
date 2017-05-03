@@ -93,17 +93,14 @@ export default class AtlasRouter {
           Controller.method = getMethod
         }
 
-        this.controller = Controller
-
-        this.apply(route)
+        this.apply(route, Controller)
       } catch(err) {
         throw err
       }
     })
   }
 
-  apply(route) {
-    const {controller} = this
+  apply(route, controller) {
     if (isType(controller.model, 'undefined')) {
       const method = new Function('app', 'action', `return app.${controller.method}('${route}/${controller.params}', action)`)
 
