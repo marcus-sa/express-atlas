@@ -2,84 +2,90 @@
 
 A simple and easy-to-use routing wrapper for Express built on directory and file pattern recognition
 
-## Getting Started
-Quick overview until documentation and last components has been coded
+* Works with both ES6 and CommonJS
 
+## Installation
+```$ npm install express-atlas```
+
+## Documentation
+
+### Initialization
+
+#### Without Mongoose
 ```javascript
 import express from 'express'
 import AtlasRouter from 'express-atlas'
-import path from 'path'
 
 const app = express()
 
-// apply middleware before usage
-// app.use(...)
-
 new AtlasRouter({
-  controllers: path.join(__dirname, 'controllers'),
+  controllers: './controllers' // Path to controllers directory
   express: app
 })
-
-app.listen(port, () => {
-  ...
-})
-```
-...
-```javascript
-export default {
-  method: 'get',
-  params: ':user',
-
-  action: function (req, res) {
-    res.send(`Welcome to ${req.params.user}!`)
-  }
-}
 ```
 
-## Want to quickly import models in a route?
-**app.js**
+#### With Mongoose
+All Mongoose models will automatically be imported 
+
 ```javascript
 import express from 'express'
 import AtlasRouter from 'express-atlas'
-import path from 'path'
 import mongoose from 'mongoose'
 
 const app = express()
 
-// apply middleware before usage
-// app.use(...)
-
 new AtlasRouter({
-  controllers: path.join(__dirname, 'controllers'),
+  controllers: './controllers' // Path to controllers directory
   express: app,
-  mongoose: [path.join(__dirname, 'models'), mongoose]
-})
-
-app.listen(port, () => {
-  ...
+  mongoose: ['./models', mongoose] // arg1 path to models, arg2 mongoose module itself
 })
 ```
 
-**some-routing-file.js**
+### Routes
+Recognition is based on:
+* Directories
+* Filename
+* Params
+* Method
+
+Incase of having multiple route names where a post and get request is being called, it's separated by the route extension instead of ```method: 'post'```
+
+
+* ```{root} > controllers > auth > login.js```
+Will become:
+```www.example.com/auth/login```
+
+
+#### Routes without Mongoose
 ```javascript
 export default {
-  method: 'get',
-  params: ':title',
-  model: 'News',
-
-  action: function (req, res, next, News) {
-    News.findOne({title: req.params.title}, (err, data) => {
-      if (err) throw err
-
-      if (data) {
-        res.send(`Title: ${data}`)
-      } else {
-        res.send('Nothing found')
-      }
-    })
+  method: 'get', // request type
+  
+  action: function (req, res) { // action to be called
+    ...
   }
 }
 ```
 
-## TODO
-* Add patterns for ignoring specific directories and files
+
+#### Routes with Mongoose
+```javascript
+export default {
+  method: 'get', // request type
+  params: ':title', // params
+  model: 'News' // Mongoose model name
+  
+  action: function (req, res, next, News) { // action to be called 
+    const {title} = req.params
+    
+    News.findOne({title: title}, (err, data) => {
+      if (err) throw err
+      
+      if (data) {
+        res.json(data)
+      } else {
+        res.send(`Nothing find for: ${title}`)
+      }
+    })
+  }
+}
