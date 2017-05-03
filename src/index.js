@@ -37,7 +37,7 @@ export default class AtlasRouter {
           glob.sync(path.join(mongoose[0], '**')).forEach(file => {
             const resolve = path.resolve(file)
 
-            if(!(fs.lstatSync(resolve).isDirectory())) {
+            if(!(fs.lstatSync(resolve).isDirectory()) && !(file.includes('/models/schemas/'))) {
               require(resolve)
             }
           })
