@@ -25,7 +25,7 @@ new AtlasRouter({
 ```
 
 #### With Mongoose
-All Mongoose models will automatically be imported 
+All Mongoose models will automatically be imported
 
 ```javascript
 import express from 'express'
@@ -50,7 +50,6 @@ Recognition is based on:
 
 Incase of having multiple route names where a post and get request is being called, it's separated by the route extension instead of ```method: 'post'```
 
-
 * ```{root} > controllers > auth > login.js```
 Will become:
 ```www.example.com/auth/login```
@@ -58,12 +57,16 @@ Will become:
 * ```{root} > controllers > auth > login-post.js```
 Will become the same, but with a **post** request
 
+* ```{root} > controllers > api > index.js```
+Will become:
+```www.example.com/api```
+
 
 #### Routes without Mongoose
 ```javascript
 export default {
   method: 'get', // request type
-  
+
   action: function (req, res) { // action to be called
     ...
   }
@@ -77,13 +80,13 @@ export default {
   method: 'get', // request type
   params: ':title', // params
   model: 'News' // Mongoose model name
-  
-  action: function (req, res, next, News) { // action to be called 
+
+  action: function (req, res, next, News) { // action to be called
     const {title} = req.params
-    
+
     News.findOne({title: title}, (err, data) => {
       if (err) throw err
-      
+
       if (data) {
         res.json(data)
       } else {
