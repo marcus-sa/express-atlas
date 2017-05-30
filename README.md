@@ -1,5 +1,7 @@
 # Express Atlas
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/marcus-sa/express-atlas.svg)](https://greenkeeper.io/)
+
 A simple and easy-to-use routing wrapper for Express built on directory and file pattern recognition
 
 * Works with both ES6 and CommonJS
