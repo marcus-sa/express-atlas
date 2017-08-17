@@ -34,7 +34,7 @@
     "express": "*"
   },
   "devDependencies": {
-    "babel-cli": "*",
+    "babel-cli": "6.24.1",
     "babel-core": "*",
     "babel-plugin-add-module-exports": "*",
     "babel-preset-es2015": "*",
