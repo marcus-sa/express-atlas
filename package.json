@@ -44,6 +44,6 @@
     "express": "*",
     "nodemon": "*",
     "mongoose": "*",
-    "cross-env": "*"
+    "cross-env": ">=5.1.1"
   }
 }
