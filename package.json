@@ -43,7 +43,7 @@
     "babel-register": "*",
     "express": "*",
     "nodemon": "*",
-    "mongoose": "*",
+    "mongoose": ">=5.0.6",
     "cross-env": "*"
   }
 }
