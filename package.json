@@ -42,7 +42,7 @@
     "babel-preset-stage-0": "*",
     "babel-register": "*",
     "express": "*",
-    "nodemon": "*",
+    "nodemon": ">=1.17.3",
     "mongoose": "*",
     "cross-env": "*"
   }
